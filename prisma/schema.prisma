@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  id       Int     @id @default(sequence())
+  name     String
+  color    String
+  price    Int
+  Clinic   Clinic? @relation(fields: [clinicId], references: [id])
+  clinicId Int?
+}
+
+model Clinic {
+  id        Int        @id @default(sequence())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String
+  address   String
+  mobile    String?
+  person    Person     @relation(fields: [personId], references: [id])
+  personId  Int        @unique
+  groupId   Int
+  group     Group      @relation(fields: [groupId], references: [id])
+  Service   Service[]
+  Customer  Customer[]
+}
+
+model Group {
+  id     Int      @id @default(sequence())
+  name   String
+  email  String
+  mobile String
+  Clinic Clinic[]
+}
+
+model Person {
+  id        Int      @id @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  name      String?
+  mobile    String?
+  clinic    Clinic[]
+  Roles     Roles[]
+}
+
+model Roles {
+  id       Int     @id @default(sequence())
+  role     String
+  personId Int
+  Person   Person? @relation(fields: [personId], references: [id])
+}
+
+model Customer {
+  id        Int      @id @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  name      String?
+  address   String
+  mobile    String?
+  clinicId  Int
+  clinic    Clinic   @relation(fields: [clinicId], references: [id])
+  Log       Log?     @relation(fields: [logId], references: [id])
+  logId     Int?
+}
+
+model Log {
+  id         Int        @id @default(sequence())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  details    String
+  customerId Int
+  customer   Customer[]
+}
