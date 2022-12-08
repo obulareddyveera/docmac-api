@@ -10,7 +10,7 @@ async function getPersonsBySelector(selector, value) {
   return resp;
 }
 async function registerClinic(payload) {
-  console.log('--== registerClinic ', payload);
+  console.log("--== registerClinic ", payload);
   const record = await prisma.person.create({
     data: {
       email: payload.primaryContactEmail,
@@ -19,35 +19,23 @@ async function registerClinic(payload) {
       clinic: {
         create: {
           name: payload.clinicName,
-          address:payload.clinicAddress,
+          address: payload.clinicAddress,
           mobile: payload.primaryContactMobile,
           group: {
             create: {
               name: payload.clinicName,
               email: payload.primaryContactEmail,
               mobile: payload.primaryContactMobile,
-            }
+            },
           },
           Service: {
-            create: [
-              {
-                name: "General",
-                color: "#c2c2c2",
-                price: 800
-              },{
-                name: "Surgen",
-                color: "#c2c2c2",
-                price: 800
-              }
-            ]
-          }
+            create: payload.linicServices,
+          },
         },
       },
       Roles: {
-        create: {
-          role: "admin"
-        }
-      }
+        create: payload.personRoles,
+      },
     },
   });
 
@@ -57,20 +45,20 @@ async function registerClinic(payload) {
       Service: true,
     },
     where: {
-      personId: record.id
-    }
+      personId: record.id,
+    },
   });
   const personDetails = await prisma.person.findMany({
     include: {
       Roles: true,
     },
     where: {
-      id: record.id
-    }
+      id: record.id,
+    },
   });
   return {
     clinic: clinicDetails,
-    person: personDetails
+    person: personDetails,
   };
 }
 

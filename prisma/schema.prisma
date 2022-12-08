@@ -13,7 +13,7 @@ datasource db {
 model Service {
   id       Int     @id @default(sequence())
   name     String
-  color    String
+  colour   String
   price    Int
   Clinic   Clinic? @relation(fields: [clinicId], references: [id])
   clinicId Int?
@@ -55,7 +55,8 @@ model Person {
 
 model Roles {
   id       Int     @id @default(sequence())
-  role     String
+  name     String
+  colour   String
   personId Int
   Person   Person? @relation(fields: [personId], references: [id])
 }
