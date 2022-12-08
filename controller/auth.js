@@ -1,13 +1,17 @@
 const { prisma } = require("../prisma/client.js");
 
 async function getPersonsBySelector(selector, value) {
-  const query = {};
-  query[selector] = value;
-  const resp = await prisma.person.findMany({
-    where: query,
-  });
-  console.log("---== getPersonsByEmail ", selector, value, resp);
-  return resp;
+  try {
+    const query = {};
+    query[selector] = value[selector];
+    const resp = await prisma.person.findMany({
+      where: query,
+    });
+    console.log("---== getPersonsByEmail ", selector, value, resp);
+    return resp;
+  } catch (error) {
+    throw error;
+  }
 }
 async function registerClinic(payload) {
   console.log("--== registerClinic ", payload);

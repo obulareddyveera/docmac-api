@@ -5,13 +5,13 @@ var authController = require("./../controller/auth");
 router.get("/duplicate/:selector", async (req, res, next) => {
   const result = await authController.getPersonsBySelector(
     req.params.selector,
-    req.query.data
+    req.query
   );
 
-  console.log("/duplicate/email", req.params.selector, req.query.data);
+  console.log("/duplicate/email", req.params.selector, req.query);
   res.json({
     query: req.query,
-    data: [],
+    data: result,
   });
 });
 
