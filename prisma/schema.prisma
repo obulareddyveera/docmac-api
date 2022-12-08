@@ -49,6 +49,7 @@ model Person {
   email     String   @unique
   name      String?
   mobile    String?
+  password  String?
   clinic    Clinic[]
   Roles     Roles[]
 }

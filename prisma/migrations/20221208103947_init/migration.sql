@@ -41,6 +41,7 @@ CREATE TABLE "Person" (
     "email" STRING NOT NULL,
     "name" STRING,
     "mobile" STRING,
+    "password" STRING,
 
     CONSTRAINT "Person_pkey" PRIMARY KEY ("id")
 );
