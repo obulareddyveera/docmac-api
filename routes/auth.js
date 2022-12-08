@@ -21,8 +21,10 @@ router.post("/register", async (req, res, next) => {
   try {
     const payload = req.body;
     console.log("/register", payload);
-    const clinic = await authController.registerClinic(payload);
-    res.status(201).send({ ...clinic });
+    const personEntity = await authController.registerClinic(payload);
+    const person = await authController.getPersonById(personEntity.id);
+    const clinic = await authController.getClinicByPersonId(personEntity.id);
+    res.status(201).send({ person, clinic });
   } catch (e) {
     res.status(500).send({error: e});
   }

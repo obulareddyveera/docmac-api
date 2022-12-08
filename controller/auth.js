@@ -48,7 +48,7 @@ module.exports = {
               },
             },
             Service: {
-              create: payload.linicServices,
+              create: payload.clinicServices,
             },
           },
         },
