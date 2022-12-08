@@ -1,72 +1,61 @@
 const { prisma } = require("../prisma/client.js");
 
-async function getPersonsBySelector(selector, value) {
-  try {
+module.exports = {
+  getClinicByPersonId: (id) => {
+    return prisma.clinic.findMany({
+      include: {
+        group: true,
+        Service: true,
+      },
+      where: {
+        personId: id,
+      },
+    });
+  },
+  getPersonById: (id) => {
+    return prisma.person.findMany({
+      include: {
+        Roles: true,
+      },
+      where: {
+        id: id,
+      },
+    });
+  },
+  getPersonsBySelector: (selector, value) => {
     const query = {};
     query[selector] = value[selector];
-    const resp = await prisma.person.findMany({
+    return prisma.person.findMany({
       where: query,
     });
-    console.log("---== getPersonsByEmail ", selector, value, resp);
-    return resp;
-  } catch (error) {
-    throw error;
-  }
-}
-async function registerClinic(payload) {
-  console.log("--== registerClinic ", payload);
-  const record = await prisma.person.create({
-    data: {
-      email: payload.primaryContactEmail,
-      name: payload.primaryContactName,
-      mobile: payload.primaryContactMobile,
-      clinic: {
-        create: {
-          name: payload.clinicName,
-          address: payload.clinicAddress,
-          mobile: payload.primaryContactMobile,
-          group: {
-            create: {
-              name: payload.clinicName,
-              email: payload.primaryContactEmail,
-              mobile: payload.primaryContactMobile,
+  },
+  registerClinic: (payload) => {
+    return prisma.person.create({
+      data: {
+        email: payload.primaryContactEmail,
+        name: payload.primaryContactName,
+        mobile: payload.primaryContactMobile,
+        clinic: {
+          create: {
+            name: payload.clinicName,
+            address: payload.clinicAddress,
+            mobile: payload.primaryContactMobile,
+            group: {
+              create: {
+                name: payload.clinicName,
+                email: payload.primaryContactEmail,
+                mobile: payload.primaryContactMobile,
+              },
+            },
+            Service: {
+              create: payload.linicServices,
             },
           },
-          Service: {
-            create: payload.linicServices,
-          },
+        },
+        Roles: {
+          create: payload.personRoles,
         },
       },
-      Roles: {
-        create: payload.personRoles,
-      },
-    },
-  });
-
-  const clinicDetails = await prisma.clinic.findMany({
-    include: {
-      group: true,
-      Service: true,
-    },
-    where: {
-      personId: record.id,
-    },
-  });
-  const personDetails = await prisma.person.findMany({
-    include: {
-      Roles: true,
-    },
-    where: {
-      id: record.id,
-    },
-  });
-  return {
-    clinic: clinicDetails,
-    person: personDetails,
-  };
-}
-
-module.exports = {
-  getPersonsBySelector,
-  registerClinic,
+    });
+  },
 };
