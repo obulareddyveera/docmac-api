@@ -11,12 +11,14 @@ datasource db {
 }
 
 model Service {
-  id       Int     @id @default(sequence())
-  name     String
-  colour   String
-  price    Int
-  Clinic   Clinic? @relation(fields: [clinicId], references: [id])
-  clinicId Int?
+  id        Int      @id @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  colour    String
+  price     Int
+  Clinic    Clinic?  @relation(fields: [clinicId], references: [id])
+  clinicId  Int?
 }
 
 model Clinic {
@@ -35,31 +37,67 @@ model Clinic {
 }
 
 model Group {
-  id     Int      @id @default(sequence())
-  name   String
-  email  String
-  mobile String
-  Clinic Clinic[]
-}
-
-model Person {
   id        Int      @id @default(sequence())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  email     String   @unique
-  name      String?
-  mobile    String?
-  password  String?
-  clinic    Clinic[]
-  Roles     Roles[]
+  name      String
+  email     String
+  mobile    String
+  Clinic    Clinic[]
 }
 
-model Roles {
-  id       Int     @id @default(sequence())
-  name     String
-  colour   String
-  personId Int
-  Person   Person? @relation(fields: [personId], references: [id])
+model Person {
+  id             Int              @id @default(sequence())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  email          String           @unique
+  name           String?
+  mobile         String?
+  password       String?
+  type           String?
+  isActive       Boolean?
+  clinic         Clinic[]
+  PaymentDetails PaymentDetails[]
+  ProfileSnap    ProfileSnap[]
+  Privs          Privs[]
+}
+
+model PaymentDetails {
+  id        Int      @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bankName  String
+  accountNo String
+  ifscCode  String
+  isActive  Boolean
+  personId  Int
+  Person    Person   @relation(fields: [personId], references: [id])
+
+  @@id([personId, id])
+}
+
+model ProfileSnap {
+  id        Int      @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  details   String
+  personId  Int
+  Person    Person   @relation(fields: [personId], references: [id])
+
+  @@id([personId, id])
+}
+
+model Privs {
+  id        Int      @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  colour    String
+  personId  Int
+  Person    Person   @relation(fields: [personId], references: [id])
+
+  @@id([personId, id])
 }
 
 model Customer {

@@ -3,9 +3,9 @@ const { prisma } = require("../prisma/client.js");
 module.exports = {
   getPersonByEmailPwd: (email, password) => {
     console.log('/login ', email, password)
-    return prisma.person.findFirstOrThrow({
+    return prisma.person.findFirst({
       include: {
-        Roles: true,
+        Privs: true,
       },
       where: {
         email: email,
@@ -27,7 +27,7 @@ module.exports = {
   getPersonById: (id) => {
     return prisma.person.findMany({
       include: {
-        Roles: true,
+        Privs: true,
       },
       where: {
         id: id,
@@ -65,7 +65,7 @@ module.exports = {
             },
           },
         },
-        Roles: {
+        Privs: {
           create: payload.personRoles,
         },
       },
@@ -77,23 +77,6 @@ module.exports = {
       return decoded.email === email;
     } catch (error) {
       return false;
-    }
-  },
-  isAuthenticated: (req, res, next) => {
-    try {
-      let token = req.get("authorization");
-      if (!token) {
-        return res.status(404).json({
-          success: false,
-          msg: "Token not found",
-        });
-      }
-      token = token.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.accessSecret);
-      req.email = decoded.email;
-      next();
-    } catch (error) {
-      return res.status(401).json({ success: false, msg: error.message });
     }
   },
 };

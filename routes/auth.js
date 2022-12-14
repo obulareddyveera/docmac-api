@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const jwt = require("jsonwebtoken");
 var authController = require("./../controller/auth");
+const { verifyRefresh } = require("./../helper");
 /* GET users listing. */
 router.get("/duplicate/:selector", async (req, res, next) => {
   try {
@@ -21,12 +22,12 @@ router.get("/duplicate/:selector", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const payload = req.body;
-    console.log('/login ', payload)
+    console.log("/login ", payload);
     const personEntity = await authController.getPersonByEmailPwd(
       payload.email,
       payload.password
     );
-    console.log('/login ', personEntity)
+    console.log("/login ", personEntity);
     if (personEntity && personEntity.id) {
       const person = await authController.getPersonById(personEntity.id);
       const clinic = await authController.getClinicByPersonId(personEntity.id);
@@ -35,18 +36,18 @@ router.post("/login", async (req, res, next) => {
       const { accessSecret, refreshSecret } = process.env;
       if (accessSecret && refreshSecret) {
         tokens.accessToken = jwt.sign(
-          { id: person.id, email: person.email, clinicId: clinic.id },
-          accessSecret,
           {
-            expiresIn: "2m",
-          }
+            personId: person[0].id,
+          },
+          accessSecret,
+          { expiresIn: "30m" }
         );
         tokens.refreshToken = jwt.sign(
-          { id: person.id, email: person.email, clinicId: clinic.id },
-          refreshSecret,
           {
-            expiresIn: "10m",
-          }
+            personId: person[0].id,
+          },
+          refreshSecret,
+          { expiresIn: "1h" }
         );
       }
       res.status(201).send({ person, clinic, tokens });
@@ -56,6 +57,24 @@ router.post("/login", async (req, res, next) => {
   } catch (e) {
     res.status(500).send({ error: e });
   }
+});
+
+router.post("/refresh", (req, res) => {
+  const { personId, refreshToken } = req.body;
+  const isValid = verifyRefresh(personId, refreshToken);
+  if (!isValid) {
+    return res
+      .status(401)
+      .json({ success: false, error: "Invalid token,try login again" });
+  }
+  const accessToken = jwt.sign(
+    {
+      personId,
+    },
+    process.env.accessSecret,
+    { expiresIn: "30m" }
+  );
+  return res.status(200).json({ success: true, accessToken });
 });
 
 router.post("/register", async (req, res, next) => {
