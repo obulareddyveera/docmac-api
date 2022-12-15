@@ -22,6 +22,24 @@ module.exports = {
       },
     });
   },
+  applyRules: async (payload) => {
+    const conditions = [];
+    payload.forEach((entity) => {
+      const opt = {};
+      opt[entity.columnName] = entity.value;
+      conditions.push(opt);
+    });
+
+    return await prisma.Person.findMany({
+      where: {
+        OR: conditions,
+      },
+      select: {
+        email: true,
+        mobile: true,
+      },
+    });
+  },
   createEmployee: (payload) => {
     console.log("/login ", payload);
     return prisma.person.create({

@@ -14,7 +14,7 @@ var employeeController = require("./../controller/employee");
     },    
 }
 */
-router.get("/employee", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const result = await employeeController.getAllEmployee();
     res.status(200).send({
@@ -26,7 +26,7 @@ router.get("/employee", async (req, res) => {
   }
 });
 
-router.get("/employee/:personId", async (req, res) => {
+router.get("/:personId", async (req, res) => {
   try {
     const result = await employeeController.getEmployeeById(
       req.params.personId
@@ -39,8 +39,20 @@ router.get("/employee/:personId", async (req, res) => {
     res.status(500).send({ error: e });
   }
 });
-
-router.post("/employee", async (req, res) => {
+router.post("/rules", async (req, res) => {
+  try {
+    const payload = req.body;
+    console.log("/employee", payload);
+    const result = await employeeController.applyRules(payload);
+    res.status(200).send({
+      data: result,
+    });
+  } catch (e) {
+    console.log("/employee POST::catch ", e);
+    res.status(500).send({ error: e });
+  }
+});
+router.post("/", async (req, res) => {
   try {
     const payload = req.body;
     console.log("/employee", payload);
@@ -53,7 +65,7 @@ router.post("/employee", async (req, res) => {
     res.status(500).send({ error: e });
   }
 });
-router.put("/employee/:personId", async (req, res) => {
+router.put("/:personId", async (req, res) => {
   try {
     const payload = req.body;
     console.log("/employee", payload);
@@ -69,7 +81,7 @@ router.put("/employee/:personId", async (req, res) => {
     res.status(500).send({ error: e });
   }
 });
-router.delete("/employee/:personId", async (req, res, next) => {
+router.delete("/:personId", async (req, res, next) => {
   try {
     const payload = req.body;
     console.log("/employee", payload);

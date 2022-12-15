@@ -29,7 +29,7 @@ const jwt = require("jsonwebtoken");
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use("/api", isAuthenticated, employeeRouter);
+app.use("/api/employee", isAuthenticated, employeeRouter);
 app.use("/users", usersRouter);
 app.use("/whatsapp", whatsappRouter);
 
