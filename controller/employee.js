@@ -1,12 +1,17 @@
 const { prisma } = require("../prisma/client.js");
 
 module.exports = {
-  getAllEmployee: () => {
+  getAllEmployee: (personId) => {
     return prisma.person.findMany({
       include: {
         Privs: true,
         ProfileSnap: true,
         PaymentDetails: true,
+      },
+      where: {
+        NOT: {
+          id: parseInt(personId),
+        },
       },
     });
   },
@@ -42,6 +47,7 @@ module.exports = {
   },
   createEmployee: (payload) => {
     console.log("/login ", payload);
+
     return prisma.person.create({
       data: {
         email: payload.email,
@@ -50,6 +56,12 @@ module.exports = {
         password: payload.password,
         type: payload.type,
         isActive: payload.isActive,
+        altMobile: payload.altMobile,
+        gender: payload.gender,
+        wages: payload.wages,
+        dob: payload.dob,
+        aadhar: payload.aadhar,
+        panNumber: payload.panNumber,
         Privs: {
           create: payload.Privs,
         },

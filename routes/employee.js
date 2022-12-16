@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const { prisma } = require("../prisma/client.js");
 var employeeController = require("./../controller/employee");
 
 /* GET home page. 
@@ -16,9 +17,12 @@ var employeeController = require("./../controller/employee");
 */
 router.get("/", async (req, res) => {
   try {
-    const result = await employeeController.getAllEmployee();
+    const result = await employeeController.getAllEmployee(req.personId);
     res.status(200).send({
-      data: result,
+      data: {
+        rows: result,
+        count: result.length,
+      },
     });
   } catch (e) {
     console.log("/employee GET::catch ", e);
@@ -32,7 +36,7 @@ router.get("/:personId", async (req, res) => {
       req.params.personId
     );
     res.status(200).send({
-      data: result,
+      item: result,
     });
   } catch (e) {
     console.log("/employee GET::catch ", e);
@@ -58,10 +62,23 @@ router.post("/", async (req, res) => {
     console.log("/employee", payload);
     const result = await employeeController.createEmployee(payload);
     res.status(200).send({
-      data: result,
+      item: result,
     });
   } catch (e) {
     console.log("/employee POST::catch ", e);
+    if (e.code === "P2002") {
+      const { target } = e.meta;
+      const messages = {};
+      target.forEach((element) => {
+        messages[element] = `Duplicate ${element} is not allowed`;
+      });
+      res.status(200).send({
+        error: {
+          code: e.code,
+          messages,
+        },
+      });
+    }
     res.status(500).send({ error: e });
   }
 });

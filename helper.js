@@ -14,7 +14,7 @@ const isAuthenticated = (req, res, next) => {
     next();
   } catch (error) {
     console.log("--== error ", error);
-    return res.status(401).json({ success: false, msg: error.message });
+    return res.status(403).json({ success: false, msg: error.message });
   }
 };
 

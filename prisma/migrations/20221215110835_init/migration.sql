@@ -44,8 +44,14 @@ CREATE TABLE "Person" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "email" STRING NOT NULL,
     "name" STRING,
-    "mobile" STRING,
+    "mobile" STRING NOT NULL,
+    "altMobile" STRING,
     "password" STRING,
+    "gender" STRING,
+    "wages" STRING,
+    "dob" STRING,
+    "aadhar" STRING,
+    "panNumber" STRING,
     "type" STRING,
     "isActive" BOOL,
 
@@ -121,6 +127,9 @@ CREATE UNIQUE INDEX "Clinic_personId_key" ON "Clinic"("personId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Person_email_key" ON "Person"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Person_mobile_key" ON "Person"("mobile");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");

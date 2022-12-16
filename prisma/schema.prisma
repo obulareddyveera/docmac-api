@@ -52,8 +52,14 @@ model Person {
   updatedAt      DateTime         @updatedAt
   email          String           @unique
   name           String?
-  mobile         String?
+  mobile         String           @unique
+  altMobile      String?
   password       String?
+  gender         String?
+  wages          String?
+  dob            String?
+  aadhar         String?
+  panNumber      String?
   type           String?
   isActive       Boolean?
   clinic         Clinic[]
