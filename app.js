@@ -11,6 +11,7 @@ var employeeRouter = require("./routes/employee");
 var usersRouter = require("./routes/users");
 var whatsappRouter = require("./routes/whatsapp");
 const { verifyRefresh, isAuthenticated } = require("./helper");
+require('dotenv').config()
 var app = express();
 
 // view engine setup
