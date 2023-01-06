@@ -57,10 +57,14 @@ model Person {
   password       String?
   gender         String?
   wages          String?
+  referal        String?
   dob            String?
   aadhar         String?
   panNumber      String?
   type           String?
+  status         String?
+  doj            String?
+  doa            String?
   isActive       Boolean?
   clinic         Clinic[]
   PaymentDetails PaymentDetails[]
