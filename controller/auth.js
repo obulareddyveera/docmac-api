@@ -13,6 +13,18 @@ module.exports = {
       },
     });
   },
+  getPersonByMobilePwd: (mobileNumber, password) => {
+    console.log('/login ', mobileNumber, password)
+    return prisma.person.findFirst({
+      include: {
+        Privs: true,
+      },
+      where: {
+        mobile: mobileNumber,
+        password: password,
+      },
+    });
+  },
   getClinicByPersonId: (id) => {
     return prisma.clinic.findMany({
       include: {

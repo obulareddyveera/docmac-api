@@ -23,10 +23,19 @@ router.post("/login", async (req, res, next) => {
   try {
     const payload = req.body;
     console.log("/login ", payload);
-    const personEntity = await authController.getPersonByEmailPwd(
-      payload.email,
-      payload.password
-    );
+    let personEntity = {}
+    if (payload.isEmailAcceptedSignIn) {
+      personEntity = await authController.getPersonByEmailPwd(
+        payload.email,
+        payload.password
+      );
+    } else {
+      personEntity = await authController.getPersonByMobilePwd(
+        payload.mobileNumber,
+        payload.password
+      );
+    }
+    
     console.log("/login ", personEntity);
     if (personEntity && personEntity.id) {
       const person = await authController.getPersonById(personEntity.id);
@@ -55,6 +64,7 @@ router.post("/login", async (req, res, next) => {
       res.status(401).send({ status: 401, msg: "Invalid Credentials" });
     }
   } catch (e) {
+    console.log('--== /login -- 500 ', e);
     res.status(500).send({ error: e });
   }
 });
