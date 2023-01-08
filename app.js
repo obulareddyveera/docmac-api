@@ -10,6 +10,7 @@ var authRouter = require("./routes/auth");
 var employeeRouter = require("./routes/employee");
 var usersRouter = require("./routes/users");
 var whatsappRouter = require("./routes/whatsapp");
+const webWhatsappRouter = require("./routes/web-whatsapp");
 const { verifyRefresh, isAuthenticated } = require("./helper");
 require('dotenv').config()
 var app = express();
@@ -26,13 +27,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 const jwt = require("jsonwebtoken");
 
-
-
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/api/employee", isAuthenticated, employeeRouter);
 app.use("/users", usersRouter);
 app.use("/whatsapp", whatsappRouter);
+app.use("/api/web-whatsapp", webWhatsappRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
