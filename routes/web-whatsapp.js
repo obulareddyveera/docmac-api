@@ -58,42 +58,26 @@ webWhatsappRouter.get("/qrcode/:clientId", async function (req, res) {
     await deleteWhatsappWebClientById(clientId);
     const client = await initWhatsappWebClient(clientId);
     console.log('--== *1* /qrcode/:clientId ', client.options);
-    let qr = await new Promise(async (resolve) => {
-      client.once("qr", (qr) => {
-        console.log('--== *2* /qrcode/:clientId ', qr);
-        qrCodeClient.toDataURL(qr, function (err, url) {
-          console.log('--== *2.1* /qrcode/:clientId ==--', err, url);
-          if (url) {
-            console.log('--== *2.2* /qrcode/:clientId ==--');
-            resolve({ qrCode: url, clientId });
-          } else {
-            console.log('--== *2.3* /qrcode/:clientId ==--');
-            resolve({ error: err, clientId });
-          }
-        });
-        console.log('--== *3* /qrcode/:clientId ==--');
-      });
-      console.log('--== *4* /qrcode/:clientId ==--');
-      client.on("ready", async () => {
-        await upsertWhatsappWebByClientId({ clientId, session: {}, status: "ready" });
-      });
-      console.log('--== *5* /qrcode/:clientId ==--');
-      setTimeout(() => {
-        console.log('--== *6* /qrcode/:clientId ==--', clientId);
-        deleteClientById(clientId)
-        console.log('--== *7* /qrcode/:clientId ==--');
-        resolve({
-          clientId,
-          error:
-            "QR event wasn't emitted in 15 seconds. Please refresh the QRCode",
-        });
-      }, 15000);
+    client.on("ready", async () => {
+      await upsertWhatsappWebByClientId({ clientId, session: {}, status: "ready" });
     });
-    console.log('--== *8* /qrcode/:clientId ==--');
-    res.send({ qrCode: qr, clientId });
-  } catch (e) {
+    client.once("qr", (qr) => {
+      console.log('--== *2.0* /qrcode/:clientId ', qr);
+      qrCodeClient.toDataURL(qr, function (err, url) {
+        console.log('--== *2.10* /qrcode/:clientId ==--', err, url);
+        if (url) {
+          console.log('--== *2.11* /qrcode/:clientId ==--');
+          res.send({ qrCode: url, clientId });
+        } else {
+          console.log('--== *2.12* /qrcode/:clientId ==--');
+          res.send({ error: err, clientId });
+        }
+      });
+      console.log('--== *2.20* /qrcode/:clientId ==--');
+    });
     console.log('--== *** /qrcode/:clientId ==--');
-    res.send({ qrCode: { error: e.message }, clientId });
+  } catch (e) {
+    console.log('--== *** /qrcode/:clientId ==--', e);
   }
 });
 webWhatsappRouter.get("/qrcode/:clientId/logout", async function (req, res) {
