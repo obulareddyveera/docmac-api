@@ -77,7 +77,7 @@ webWhatsappRouter.get("/qrcode/:clientId", async function (req, res) {
           error:
             "QR event wasn't emitted in 15 seconds. Please refresh the QRCode",
         });
-      }, 15000);
+      }, 35000);
     });
     res.send({ qrCode: qr, clientId });
   } catch (e) {
