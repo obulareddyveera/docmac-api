@@ -21,6 +21,15 @@ model Service {
   clinicId  Int?
 }
 
+model WebWhatsapp {
+  id        Int      @id @default(sequence())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clientId  String   @unique
+  session   String
+  status    String
+}
+
 model Clinic {
   id        Int        @id @default(sequence())
   createdAt DateTime   @default(now())
@@ -28,12 +37,11 @@ model Clinic {
   name      String
   address   String
   mobile    String?
-  person    Person     @relation(fields: [personId], references: [id])
-  personId  Int        @unique
   groupId   Int
   group     Group      @relation(fields: [groupId], references: [id])
   Service   Service[]
   Customer  Customer[]
+  Person    Person[]
 }
 
 model Group {
@@ -66,7 +74,8 @@ model Person {
   doj            String?
   doa            String?
   isActive       Boolean?
-  clinic         Clinic[]
+  clinicId       Int
+  clinic         Clinic           @relation(fields: [clinicId], references: [id])
   PaymentDetails PaymentDetails[]
   ProfileSnap    ProfileSnap[]
   Privs          Privs[]

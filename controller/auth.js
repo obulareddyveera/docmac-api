@@ -2,7 +2,6 @@ const { prisma } = require("../prisma/client.js");
 
 module.exports = {
   getPersonByEmailPwd: (email, password) => {
-    console.log('/login ', email, password)
     return prisma.person.findFirst({
       include: {
         Privs: true,
@@ -14,7 +13,6 @@ module.exports = {
     });
   },
   getPersonByMobilePwd: (mobileNumber, password) => {
-    console.log('/login ', mobileNumber, password)
     return prisma.person.findFirst({
       include: {
         Privs: true,
@@ -25,14 +23,14 @@ module.exports = {
       },
     });
   },
-  getClinicByPersonId: (id) => {
+  getClinicById: (id) => {
     return prisma.clinic.findMany({
       include: {
         group: true,
         Service: true,
       },
       where: {
-        personId: id,
+        id: id,
       },
     });
   },
@@ -40,6 +38,7 @@ module.exports = {
     return prisma.person.findMany({
       include: {
         Privs: true,
+        clinic: true,
       },
       where: {
         id: id,
@@ -54,34 +53,62 @@ module.exports = {
     });
   },
   registerClinic: (payload) => {
-    return prisma.person.create({
+    return prisma.clinic.create({
       data: {
-        email: payload.primaryContactEmail,
-        name: payload.primaryContactName,
+        name: payload.clinicName,
+        address: payload.clinicAddress,
         mobile: payload.primaryContactMobile,
-        password: payload.primaryContactPassword,
-        clinic: {
+        group: {
           create: {
             name: payload.clinicName,
-            address: payload.clinicAddress,
+            email: payload.primaryContactEmail,
             mobile: payload.primaryContactMobile,
-            group: {
-              create: {
-                name: payload.clinicName,
-                email: payload.primaryContactEmail,
-                mobile: payload.primaryContactMobile,
-              },
-            },
-            Service: {
-              create: payload.clinicServices,
-            },
           },
         },
-        Privs: {
-          create: payload.personRoles,
+        Service: {
+          create: payload.clinicServices,
         },
+        Person: {
+          create: {
+            email: payload.primaryContactEmail,
+            name: payload.primaryContactName,
+            mobile: payload.primaryContactMobile,
+            password: payload.primaryContactPassword,
+            Privs: {
+              create: payload.personRoles,
+            },
+          }
+        }
       },
     });
+    // return prisma.person.create({
+    //   data: {
+    //     email: payload.primaryContactEmail,
+    //     name: payload.primaryContactName,
+    //     mobile: payload.primaryContactMobile,
+    //     password: payload.primaryContactPassword,
+    //     clinic: {
+    //       create: {
+    //         name: payload.clinicName,
+    //         address: payload.clinicAddress,
+    //         mobile: payload.primaryContactMobile,
+    //         group: {
+    //           create: {
+    //             name: payload.clinicName,
+    //             email: payload.primaryContactEmail,
+    //             mobile: payload.primaryContactMobile,
+    //           },
+    //         },
+    //         Service: {
+    //           create: payload.clinicServices,
+    //         },
+    //       },
+    //     },
+    //     Privs: {
+    //       create: payload.personRoles,
+    //     },
+    //   },
+    // });
   },
   checkRefreshToken: (email, token) => {
     try {

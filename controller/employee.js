@@ -46,7 +46,6 @@ module.exports = {
     });
   },
   createEmployee: (payload) => {
-    console.log("/login ", payload);
 
     return prisma.person.create({
       data: {
@@ -66,6 +65,7 @@ module.exports = {
         dob: payload.dob,
         aadhar: payload.aadhar,
         panNumber: payload.panNumber,
+        clinicId: payload.clinicId,
         Privs: {
           create: payload.Privs,
         },
@@ -79,7 +79,6 @@ module.exports = {
     });
   },
   updateEmployee: async (personId, payload) => {
-    console.log("Controller ::: updateEmployee ", payload);
     return await prisma.person.update({
       data: {
         email: payload.email,

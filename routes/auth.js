@@ -22,7 +22,6 @@ router.get("/duplicate/:selector", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const payload = req.body;
-    console.log("/login ", payload);
     let personEntity = {}
     if (payload.isEmailAcceptedSignIn) {
       personEntity = await authController.getPersonByEmailPwd(
@@ -36,10 +35,9 @@ router.post("/login", async (req, res, next) => {
       );
     }
     
-    console.log("/login ", personEntity);
     if (personEntity && personEntity.id) {
       const person = await authController.getPersonById(personEntity.id);
-      const clinic = await authController.getClinicByPersonId(personEntity.id);
+      const clinic = await authController.getClinicById(person.clinicId);
 
       const tokens = {};
       const { accessSecret, refreshSecret } = process.env;
@@ -64,7 +62,6 @@ router.post("/login", async (req, res, next) => {
       res.status(401).send({ status: 401, msg: "Invalid Credentials" });
     }
   } catch (e) {
-    console.log('--== /login -- 500 ', e);
     res.status(500).send({ error: e });
   }
 });
@@ -90,10 +87,9 @@ router.post("/refresh", (req, res) => {
 router.post("/register", async (req, res, next) => {
   try {
     const payload = req.body;
-    console.log("/register", payload);
     const personEntity = await authController.registerClinic(payload);
     const person = await authController.getPersonById(personEntity.id);
-    const clinic = await authController.getClinicByPersonId(personEntity.id);
+    const clinic = await authController.getClinicById(personEntity.clinicId);
 
     const tokens = {};
     const { accessSecret, refreshSecret } = process.env;
@@ -114,7 +110,7 @@ router.post("/register", async (req, res, next) => {
       );
     }
 
-    res.status(201).send({ person, clinic, tokens });
+    res.status(201).send({ tokens });
   } catch (e) {
     res.status(500).send({ error: e });
   }

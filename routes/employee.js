@@ -25,7 +25,6 @@ router.get("/", async (req, res) => {
       },
     });
   } catch (e) {
-    console.log("/employee GET::catch ", e);
     res.status(500).send({ error: e });
   }
 });
@@ -39,33 +38,28 @@ router.get("/:personId", async (req, res) => {
       item: result,
     });
   } catch (e) {
-    console.log("/employee GET::catch ", e);
     res.status(500).send({ error: e });
   }
 });
 router.post("/rules", async (req, res) => {
   try {
     const payload = req.body;
-    console.log("/employee", payload);
     const result = await employeeController.applyRules(payload);
     res.status(200).send({
       data: result,
     });
   } catch (e) {
-    console.log("/employee POST::catch ", e);
     res.status(500).send({ error: e });
   }
 });
 router.post("/", async (req, res) => {
   try {
     const payload = req.body;
-    console.log("/employee", payload);
     const result = await employeeController.createEmployee(payload);
     res.status(200).send({
       item: result,
     });
   } catch (e) {
-    console.log("/employee POST::catch ", e);
     if (e.code === "P2002") {
       const { target } = e.meta;
       const messages = {};
@@ -85,7 +79,6 @@ router.post("/", async (req, res) => {
 router.put("/:personId", async (req, res) => {
   try {
     const payload = req.body;
-    console.log("/employee", payload);
     const result = await employeeController.updateEmployee(
       req.params.personId,
       payload
@@ -94,20 +87,17 @@ router.put("/:personId", async (req, res) => {
       data: result,
     });
   } catch (e) {
-    console.log("/employee POST::catch ", e);
     res.status(500).send({ error: e });
   }
 });
 router.delete("/:personId", async (req, res, next) => {
   try {
     const payload = req.body;
-    console.log("/employee", payload);
     const result = await employeeController.deleteEmployee(req.params.personId);
     res.status(200).send({
       data: result,
     });
   } catch (e) {
-    console.log("/employee POST::catch ", e);
     res.status(500).send({ error: e });
   }
 });

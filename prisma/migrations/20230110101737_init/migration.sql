@@ -19,7 +19,6 @@ CREATE TABLE "Clinic" (
     "name" STRING NOT NULL,
     "address" STRING NOT NULL,
     "mobile" STRING,
-    "personId" INT4 NOT NULL,
     "groupId" INT4 NOT NULL,
 
     CONSTRAINT "Clinic_pkey" PRIMARY KEY ("id")
@@ -49,11 +48,16 @@ CREATE TABLE "Person" (
     "password" STRING,
     "gender" STRING,
     "wages" STRING,
+    "referal" STRING,
     "dob" STRING,
     "aadhar" STRING,
     "panNumber" STRING,
     "type" STRING,
+    "status" STRING,
+    "doj" STRING,
+    "doa" STRING,
     "isActive" BOOL,
+    "clinicId" INT4 NOT NULL,
 
     CONSTRAINT "Person_pkey" PRIMARY KEY ("id")
 );
@@ -123,9 +127,6 @@ CREATE TABLE "Log" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Clinic_personId_key" ON "Clinic"("personId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Person_email_key" ON "Person"("email");
 
 -- CreateIndex
@@ -138,10 +139,10 @@ CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
 ALTER TABLE "Service" ADD CONSTRAINT "Service_clinicId_fkey" FOREIGN KEY ("clinicId") REFERENCES "Clinic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Clinic" ADD CONSTRAINT "Clinic_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Clinic" ADD CONSTRAINT "Clinic_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Clinic" ADD CONSTRAINT "Clinic_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Person" ADD CONSTRAINT "Person_clinicId_fkey" FOREIGN KEY ("clinicId") REFERENCES "Clinic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PaymentDetails" ADD CONSTRAINT "PaymentDetails_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Person"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

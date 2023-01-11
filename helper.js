@@ -13,7 +13,6 @@ const isAuthenticated = (req, res, next) => {
     req.personId = decoded.personId;
     next();
   } catch (error) {
-    console.log("--== error ", error);
     return res.status(403).json({ success: false, msg: error.message });
   }
 };
@@ -21,7 +20,6 @@ const isAuthenticated = (req, res, next) => {
 function verifyRefresh(personId, token) {
   try {
     const decoded = jwt.verify(token, process.env.refreshSecret);
-    console.log("--== verifyRefresh decoded ", decoded);
     return parseInt(decoded.personId) === parseInt(personId);
   } catch (error) {
     console.error(error);
