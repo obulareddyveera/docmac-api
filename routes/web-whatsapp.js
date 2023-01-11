@@ -49,7 +49,7 @@ webWhatsappRouter.get(
 webWhatsappRouter.get("/qrcode/:clientId/instance", async function (req, res) {
   const { clientId } = req.params;
   const client = await initWhatsappWebClient(clientId);
-  res.send({ whatsappWebClient: JSON.stringify(client) });
+  res.send({ whatsappWebClient: client && client.options ? JSON.stringify(client.options): JSON.stringify(client) });
 });
 /* GET users listing. */
 webWhatsappRouter.get("/qrcode/:clientId", async function (req, res) {

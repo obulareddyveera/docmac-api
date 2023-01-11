@@ -12,6 +12,7 @@ module.exports = {
       }
     } catch (e) {
       console.log("--== **> *#ctrl initWhatsappWebClient ==--", clientId, e);
+      return e;
     }
     return client[clientId];
   },
